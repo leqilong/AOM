@@ -30,10 +30,13 @@
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
     "gulp-imagemin": "^3.2.0",
+    "gulp-jscs": "^4.0.0",
     "gulp-jshint": "^2.0.4",
     "gulp-livereload": "^3.8.1",
     "gulp-uglify": "^2.1.2",
     "gulp-util": "^3.0.8",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
     "vinyl-source-stream": "^1.1.0"
   }
 }
