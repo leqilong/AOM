@@ -15,7 +15,7 @@
     "game"
   ],
   "author": "Leqi Long",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/leqilong/AOM/issues"
   },
@@ -28,18 +28,12 @@
     "browserify": "^14.3.0",
     "del": "^2.2.2",
     "eslint": "^3.19.0",
-    "eslint-config-google": "^0.7.1",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1",
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
     "gulp-eslint": "^3.0.1",
     "gulp-imagemin": "^3.2.0",
     "gulp-livereload": "^3.8.1",
     "gulp-uglify": "^2.1.2",
-    "jshint": "^2.9.4",
-    "jshint-stylish": "^2.2.1",
     "vinyl-source-stream": "^1.1.0"
   }
 }

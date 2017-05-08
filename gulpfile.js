@@ -1,15 +1,16 @@
 var gulp = require('gulp'),
+  path = require('path'),
   eslint = require('gulp-eslint'),
-  browserSync = require('browser-sync'),
-  browserify = require('browserify'),
+  uglify = require('gulp-uglify'),
   source = require('vinyl-source-stream'),
-  buffer = require('gulp-buffer');
-//     uglify = require('gulp-uglify'),
+  buffer = require('gulp-buffer'),
+  browserify = require('browserify'),
+  browserSync = require('browser-sync');
 //     image_min = require('gulp-imagemin'),
 //     livereload = require('gulp-livereload'),
 //     del = require('del');
 
-gulp.task("style", function() {
+gulp.task('style', function() {
   return gulp.src([
     '**/*.js',
     '!node_modules{},/**}',
@@ -40,13 +41,16 @@ gulp.task('static', function() {
 });
 
 gulp.task('build', function() {
-  browserify({
+  return browserify({
+    paths: [path.join(__dirname, './src')],
     entries: './src/index.js',
     debug: true
   })
   .bundle()
   .pipe(source('game.js'))
+  .pipe(buffer())
+  .pipe(uglify())
   .pipe(gulp.dest('./build/scripts'));
 });
 
-gulp.task('default', ['phaser', 'serve','static', 'build', 'style']);
+gulp.task('default', ['phaser', 'serve', 'static', 'build', 'style']);
