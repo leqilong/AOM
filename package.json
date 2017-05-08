@@ -4,7 +4,7 @@
   "description": "Hack day ",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "gulp"
   },
   "repository": {
     "type": "git",
@@ -27,14 +27,17 @@
     "browser-sync": "^2.18.8",
     "browserify": "^14.3.0",
     "del": "^2.2.2",
+    "eslint": "^3.19.0",
+    "eslint-config-google": "^0.7.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "gulp": "^3.9.1",
     "gulp-buffer": "0.0.2",
+    "gulp-eslint": "^3.0.1",
     "gulp-imagemin": "^3.2.0",
-    "gulp-jscs": "^4.0.0",
-    "gulp-jshint": "^2.0.4",
     "gulp-livereload": "^3.8.1",
     "gulp-uglify": "^2.1.2",
-    "gulp-util": "^3.0.8",
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
     "vinyl-source-stream": "^1.1.0"
