@@ -1,0 +1,8 @@
+{
+    "platforms": [
+        {"image": "tile", "x": 0, "y": 320},
+        {"image": "tile", "x": 200, "y": 320},
+        {"image": "tile", "x": 400, "y": 320}
+    ],
+    "hero":{"x": 21, "y": 320}
+}
