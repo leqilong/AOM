@@ -1,15 +1,19 @@
-const gulp = require('gulp')
-const path = require('path')
-const eslint = require('gulp-eslint')
-const uglify = require('gulp-uglify')
-const buffer = require('gulp-buffer')
-const browserify = require('browserify')
-const browserSync = require('browser-sync').create()
+'use strict'
+
+const gulp = require('gulp');
 const del = require('del');
-  //     image_min = require('gulp-imagemin');
+const path = require('path');
+const eslint = require('gulp-eslint');
+const uglify = require('gulp-uglify');
+const buffer = require('gulp-buffer');
+const source = require('vinyl-source-stream');
+const browserify = require('browserify');
+const browserSync = require('browser-sync').create();
+// const image_min = require('gulp-imagemin');
 
 var keepFiles = false;
 
+// Deletes all files in the build directory.
 gulp.task('clean', function() {
   if (!keepFiles) {
     del(['build/**/*.*']);
@@ -18,16 +22,19 @@ gulp.task('clean', function() {
   }
 });
 
+// Copies content in ./static directory to ./build directory
 gulp.task('static', ['clean'], function() {
   return gulp.src('./static/**/*')
     .pipe(gulp.dest('./build'));
 });
 
+// Copies Phaser library to ./build directory
 gulp.task('phaser', ['static'], function() {
   return gulp.src('./node_modules/phaser/build/phaser.min.js')
     .pipe(gulp.dest('./build/scripts'));
 });
 
+// Starts the server and watches for file changes
 gulp.task('serve', ['build'], function() {
   browserSync.init({
     server: {
@@ -39,6 +46,7 @@ gulp.task('serve', ['build'], function() {
   });
 });
 
+// Bundles js files into game.js
 gulp.task('build', ['phaser'], function() {
   return browserify({
     paths: [path.join(__dirname, './src')],
@@ -53,6 +61,7 @@ gulp.task('build', ['phaser'], function() {
   .pipe(browserSync.stream());
 });
 
+// Check coding style and notify about issues
 gulp.task('style', function() {
   return gulp.src([
     '**/*.js',
@@ -61,7 +70,7 @@ gulp.task('style', function() {
   ])
   .pipe(eslint())
   .pipe(eslint.format())
-  .pipe(eslint.failOnError());
+  // .pipe(eslint.failOnError());
 });
 
 gulp.task('default', ['clean', 'static', 'phaser', 'serve', 'build', 'style']);
