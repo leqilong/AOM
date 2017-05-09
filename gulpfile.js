@@ -5,10 +5,54 @@ var gulp = require('gulp'),
   source = require('vinyl-source-stream'),
   buffer = require('gulp-buffer'),
   browserify = require('browserify'),
-  browserSync = require('browser-sync');
-//     image_min = require('gulp-imagemin'),
-//     livereload = require('gulp-livereload'),
-//     del = require('del');
+  browserSync = require('browser-sync').create(),
+  del = require('del');
+  //     image_min = require('gulp-imagemin');
+
+var keepFiles = false;
+
+gulp.task('clean', function() {
+  if (!keepFiles) {
+    del(['build/**/*.*']);
+  } else {
+    keepFiles = false;
+  }
+});
+
+gulp.task('static', ['clean'], function() {
+  return gulp.src('./static/**/*')
+    .pipe(gulp.dest('./build'));
+});
+
+gulp.task('phaser', ['static'], function() {
+  return gulp.src('./node_modules/phaser/build/phaser.min.js')
+    .pipe(gulp.dest('./build/scripts'));
+});
+
+gulp.task('serve', ['build'], function() {
+  browserSync.init({
+    server: {
+      baseDir: './build'
+    }
+  });
+  gulp.watch('./src/**/*.js', ['build']).on('change', function() {
+    keepFiles = true;
+  });
+});
+
+gulp.task('build', ['phaser'], function() {
+  return browserify({
+    paths: [path.join(__dirname, './src')],
+    entries: './src/index.js',
+    debug: true
+  })
+  .bundle()
+  .pipe(source('game.js'))
+  .pipe(buffer())
+  .pipe(uglify())
+  .pipe(gulp.dest('./build/scripts'))
+  .pipe(browserSync.stream());
+});
 
 gulp.task('style', function() {
   return gulp.src([
@@ -21,36 +65,4 @@ gulp.task('style', function() {
   .pipe(eslint.failOnError());
 });
 
-gulp.task('phaser', function() {
-  gulp.src('./node_modules/phaser/build/phaser.min.js')
-    .pipe(gulp.dest('./build/scripts'));
-});
-
-gulp.task('serve', function() {
-  browserSync.init({
-    server: {
-      baseDir: './build'
-    }
-  });
-  gulp.watch('./src/**/*.js').on('change', browserSync.reload);
-});
-
-gulp.task('static', function() {
-  return gulp.src('./static/**/*')
-    .pipe(gulp.dest('./build'));
-});
-
-gulp.task('build', function() {
-  return browserify({
-    paths: [path.join(__dirname, './src')],
-    entries: './src/index.js',
-    debug: true
-  })
-  .bundle()
-  .pipe(source('game.js'))
-  .pipe(buffer())
-  .pipe(uglify())
-  .pipe(gulp.dest('./build/scripts'));
-});
-
-gulp.task('default', ['phaser', 'serve', 'static', 'build', 'style']);
+gulp.task('default', ['clean', 'static', 'phaser', 'serve', 'build', 'style']);
