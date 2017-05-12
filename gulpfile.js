@@ -24,7 +24,7 @@ gulp.task('clean', function() {
 
 // Copies content in ./static directory to ./build directory
 gulp.task('static', ['clean'], function() {
-  return gulp.src('./static/**/*')
+  return gulp.src('./client/static/**/*')
     .pipe(gulp.dest('./build'));
 });
 
@@ -50,7 +50,7 @@ gulp.task('serve', ['build'], function() {
 gulp.task('build', ['phaser'], function() {
   return browserify({
     paths: [path.join(__dirname, './src')],
-    entries: './src/index.js',
+    entries: './client/src/index.js',
     debug: true
   })
   .bundle()
