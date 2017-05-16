@@ -1,7 +1,7 @@
 {
   "name": "aom",
   "version": "1.0.0",
-  "description": "Hack day ",
+  "description": "Hack day",
   "main": "index.js",
   "scripts": {
     "start": "gulp"
@@ -11,8 +11,7 @@
     "url": "git+https://github.com/leqilong/AOM.git"
   },
   "keywords": [
-    "video",
-    "game"
+    "video game"
   ],
   "author": "Leqi Long",
   "license": "MIT",
@@ -21,6 +20,7 @@
   },
   "homepage": "https://github.com/leqilong/AOM#readme",
   "dependencies": {
+    "express": "^4.15.2",
     "phaser": "^2.6.2",
     "request": "^2.81.0"
   },
