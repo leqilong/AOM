@@ -26,6 +26,36 @@ Hero.prototype.jump = function(){
   return canJump;
 };
 
+
+function Spider(game, x, y){
+  Phaser.Sprite.call(this, game, x, y, 'spider');
+  //anchor
+  this.anchor.set(0.5);
+  //animation
+  this.animations.add('crawl', [0,1,2], 8, true);
+  this.animations.add('die', [0,4,0,4,0,4,3,3,3,3,3,3], 12);
+  this.animations.play('crawl');
+
+  //physic properties
+  this.game.physics.enable(this);
+  this.body.collideWorldBounds = true;
+  this.body.velocity.x = Spider.SPEED;
+}
+
+Spider.SPEED = 100;
+
+//inherit from Phaser.Sprite
+Spider.prototype = Object.create(Phaser.Sprite.prototype);
+Spider.prototype.constructor = Spider;
+Spider.prototype.update = function(){
+  //check against walls and reverse direction if neccessary
+  if (this.body.touching.right || this.body.blocked.right){
+    this.body.velocity.x = - Spider.SPEED; //turn left
+  }else if (this.body.touching.left || this.body.blocked.left){
+    this.body.velocity.x = Spider.SPEED; //turn right
+  }
+};
+
 exports.init = function(){
   this.game.renderer.renderSession.roundPixels = true;
   this.keys = this.game.input.keyboard.addKeys({
@@ -43,6 +73,8 @@ exports.preload = function (game) {
   game.load.image('tile', 'assets/tiles/tile.png');
   game.load.image('hero', 'assets/goat.png');
   game.load.spritesheet('coin', 'assets/coin_animated.png', 22, 22);
+  game.load.spritesheet('spider', 'assets/spider.png', 42, 32);
+  game.load.image('invisible-wall', 'assets/invisible_wall.png');
 };
 
 exports.create = function (game) {
@@ -53,11 +85,16 @@ exports.create = function (game) {
 exports._loadLevel = function (data) {
   // create all the groups/layers that we need
   this.platforms = this.game.add.group();
-
+  this.coins = this.game.add.group();
+  this.spiders = this.game.add.group();
+  this.enemyWalls = this.game.add.group();
+  this.enemyWalls.visible = false;
   // spawn all platforms
   data.platforms.forEach(this._spawnPlatform, this);
   //spawn heroes and enemies
-  this._spawnCharacters({hero: data.hero});
+  this._spawnCharacters({hero: data.hero, spiders: data.spiders});
+  //spawn important objects
+  data.coins.forEach(this._spawnCoin, this);
 
   // enable gravity
   const GRAVITY = 1200;
@@ -71,13 +108,40 @@ exports._spawnPlatform = function (platform) {
   this.game.physics.enable(sprite);
   sprite.body.allowGravity = false;
   sprite.body.immovable = true;
+  this._spawnEnemyWall(platform.x, platform.y, 'left');
+  this._spawnEnemyWall(platform.x + sprite.width, platform.y, 'right');
 
 };
 
+exports._spawnCoin = function(coin){
+  const sprite = this.coins.create(coin.x, coin.y, 'coin');
+  sprite.anchor.set(0.5, 0.5);
+  sprite.animations.add('rotate', [0,1,2,1], 6, true); //6 fps, looped
+  sprite.animations.play('rotate');
+  this.game.physics.enable(sprite);
+  sprite.body.allowGravity = false;
+};
+
 exports._spawnCharacters = function (data){
+  //spawn spiders
+  data.spiders.forEach(function(spider){
+    const sprite = new Spider(this.game, spider.x, spider.y);
+    this.spiders.add(sprite);
+  },this);
   //spawn hero
   this.hero = new Hero(this.game, data.hero.x, data.hero.y);
   this.game.add.existing(this.hero);
+};
+
+exports._spawnEnemyWall = function(x, y, side){
+  const sprite = this.enemyWalls.create(x, y, 'invisible-wall');
+  //anchor and y displacement
+  sprite.anchor.set(side === 'left' ? 1 : 0, 1 );
+  //physics properties
+  this.game.physics.enable(sprite);
+  sprite.body.immovable = true;
+  sprite.body.allowGravity = false;
+
 };
 
 exports.update = function(){
@@ -86,8 +150,16 @@ exports.update = function(){
 };
 
 exports._handleCollisions = function () {
+  this.game.physics.arcade.collide(this.spiders, this.platforms);
+  this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
   this.game.physics.arcade.collide(this.hero, this.platforms);
+  this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin, null, this);
 };
+
+exports._onHeroVsCoin = function(hero, coin){
+  coin.kill();
+};
+
 exports._handleInput = function(){
   if (this.keys.left.isDown){
     this.hero.move(-1);
