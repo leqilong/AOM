@@ -4,7 +4,7 @@ const gulp = require('gulp');
 const del = require('del');
 const path = require('path');
 const eslint = require('gulp-eslint');
-const uglify = require('gulp-uglify');
+// const uglify = require('gulp-uglify');
 const buffer = require('gulp-buffer');
 const source = require('vinyl-source-stream');
 const browserify = require('browserify');
@@ -56,7 +56,7 @@ gulp.task('build', ['phaser'], function() {
   .bundle()
   .pipe(source('game.js'))
   .pipe(buffer())
-  .pipe(uglify())
+  // .pipe(uglify())
   .pipe(gulp.dest('./build/scripts'))
   .pipe(browserSync.stream());
 });
@@ -70,7 +70,7 @@ gulp.task('style', function() {
   ])
   .pipe(eslint())
   .pipe(eslint.format())
-  // .pipe(eslint.failOnError());
+  .pipe(eslint.failOnError());
 });
 
 gulp.task('default', ['clean', 'static', 'phaser', 'serve', 'build', 'style']);
