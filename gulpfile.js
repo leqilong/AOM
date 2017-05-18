@@ -1,6 +1,7 @@
 'use strict';
 
 const gulp = require('gulp');
+const gutil = require('gulp-util');
 const del = require('del');
 const path = require('path');
 const eslint = require('gulp-eslint');
@@ -56,7 +57,10 @@ gulp.task('build', ['phaser'], function() {
   .bundle()
   .pipe(source('game.js'))
   .pipe(buffer())
-  .pipe(uglify())
+  // .pipe(uglify()).on('error', function(err) {
+  //   gutil.log(gutil.colors.red('[Error]'), err.toString());
+  //   this.emit('end');
+  // })
   .pipe(gulp.dest('./build/scripts'))
   .pipe(browserSync.stream());
 });
@@ -71,7 +75,7 @@ gulp.task('style', function() {
   ])
   .pipe(eslint())
   .pipe(eslint.format());
-  //.pipe(eslint.failOnError());
+  // .pipe(eslint.failOnError());
 });
 
 gulp.task('default', ['clean', 'static', 'phaser', 'serve', 'build', 'style']);
