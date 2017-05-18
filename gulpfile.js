@@ -69,8 +69,8 @@ gulp.task('style', function() {
     '!build{},/**}'
   ])
   .pipe(eslint())
-  .pipe(eslint.format())
-  .pipe(eslint.failOnError());
+  .pipe(eslint.format());
+  //.pipe(eslint.failOnError());
 });
 
 gulp.task('default', ['clean', 'static', 'phaser', 'serve', 'build', 'style']);

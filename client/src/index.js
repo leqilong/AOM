@@ -3,7 +3,7 @@
 var boot = require('./states/boot.js');
 var preload = require('./states/preload.js');
 
-var game = new Phaser.Game(600, 450, Phaser.AUTO, 'content');
+var game = new Phaser.Game(800, 450, Phaser.AUTO, 'content');
 
 game.state.add('boot', boot);
 game.state.add('preload', preload);
