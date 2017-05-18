@@ -65,6 +65,7 @@ gulp.task('build', ['phaser'], function() {
 gulp.task('style', function() {
   return gulp.src([
     '**/*.js',
+    '!server{},/**}',
     '!node_modules{},/**}',
     '!build{},/**}'
   ])
