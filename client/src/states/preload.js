@@ -25,6 +25,10 @@ Hero.prototype.jump = function(){
   }
   return canJump;
 };
+Hero.prototype.bounce = function(){
+  const BOUNCE_SPEED = 200;
+  this.body.velocity.y = - BOUNCE_SPEED;
+};
 
 
 function Spider(game, x, y){
@@ -55,6 +59,12 @@ Spider.prototype.update = function(){
     this.body.velocity.x = Spider.SPEED; //turn right
   }
 };
+Spider.prototype.die = function(){
+  this.body.enable = false;
+  this.animations.play('die').onComplete.addOnce(function(){
+    this.kill();
+  }, this);
+};
 
 exports.init = function(){
   this.game.renderer.renderSession.roundPixels = true;
@@ -66,6 +76,7 @@ exports.init = function(){
   this.keys.up.onDown.add(function(){
     this.hero.jump();
   }, this);
+  this.coinPickupCount = 0;
 };
 
 exports.preload = function (game) {
@@ -75,11 +86,14 @@ exports.preload = function (game) {
   game.load.spritesheet('coin', 'assets/coin_animated.png', 22, 22);
   game.load.spritesheet('spider', 'assets/spider.png', 42, 32);
   game.load.image('invisible-wall', 'assets/invisible_wall.png');
+  game.load.image('icon:coin', 'assets/coin_icon.png');
+  game.load.image('font:number', 'assets/numbers.png');
 };
 
 exports.create = function (game) {
   game.add.image(0, 0, 'jaime');
   this._loadLevel(game.cache.getJSON('level:0'));
+  this._createHud();
 };
 
 exports._loadLevel = function (data) {
@@ -147,6 +161,7 @@ exports._spawnEnemyWall = function(x, y, side){
 exports.update = function(){
   this._handleCollisions();
   this._handleInput();
+  this.coinFont.text = `x${this.coinPickupCount}`;
 };
 
 exports._handleCollisions = function () {
@@ -154,10 +169,21 @@ exports._handleCollisions = function () {
   this.game.physics.arcade.collide(this.spiders, this.enemyWalls);
   this.game.physics.arcade.collide(this.hero, this.platforms);
   this.game.physics.arcade.overlap(this.hero, this.coins, this._onHeroVsCoin, null, this);
+  this.game.physics.arcade.overlap(this.hero, this.spiders, this._onHeroVsEnemy, null, this);
 };
 
 exports._onHeroVsCoin = function(hero, coin){
   coin.kill();
+  this.coinPickupCount++;
+};
+
+exports._onHeroVsEnemy = function(hero, enemy){
+  if (hero.body.velocity.y > 0) {
+    hero.bounce();
+    enemy.die();
+  }else {
+    this.game.state.restart();
+  }
 };
 
 exports._handleInput = function(){
@@ -168,4 +194,19 @@ exports._handleInput = function(){
   }else{
     this.hero.move(0);
   }
+};
+
+exports._createHud = function(){
+  const coinIcon = this.game.make.image(0,0,'icon:coin');
+  const coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
+    coinIcon.height/2, this.coinFont);
+  coinScoreImg.anchor.set(0, 0.5);
+  const NUMBERS_STR = '0123456789X';
+  this.coinFont = this.game.add.retroFont('font:numbers', 20, 26,
+    NUMBERS_STR, 6);
+
+  this.hud = this.game.add.group();
+  this.hud.add(coinIcon);
+  this.hud.position.set(10,10);
+  this.hud.add(coinScoreImg);
 };
