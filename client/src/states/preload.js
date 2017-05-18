@@ -76,7 +76,6 @@ exports.init = function(){
   this.keys.up.onDown.add(function(){
     this.hero.jump();
   }, this);
-  this.coinPickupCount = 0;
 };
 
 exports.preload = function (game) {
@@ -86,14 +85,13 @@ exports.preload = function (game) {
   game.load.spritesheet('coin', 'assets/coin_animated.png', 22, 22);
   game.load.spritesheet('spider', 'assets/spider.png', 42, 32);
   game.load.image('invisible-wall', 'assets/invisible_wall.png');
-  game.load.image('icon:coin', 'assets/coin_icon.png');
-  game.load.image('font:number', 'assets/numbers.png');
+  //game.load.image('font:number', 'assets/numbers.png');
 };
 
 exports.create = function (game) {
   game.add.image(0, 0, 'jaime');
   this._loadLevel(game.cache.getJSON('level:0'));
-  this._createHud();
+  //this._createHud();
 };
 
 exports._loadLevel = function (data) {
@@ -161,7 +159,7 @@ exports._spawnEnemyWall = function(x, y, side){
 exports.update = function(){
   this._handleCollisions();
   this._handleInput();
-  this.coinFont.text = `x${this.coinPickupCount}`;
+  //this.coinFont.text = `x${this.coinPickupCount}`;
 };
 
 exports._handleCollisions = function () {
@@ -174,7 +172,6 @@ exports._handleCollisions = function () {
 
 exports._onHeroVsCoin = function(hero, coin){
   coin.kill();
-  this.coinPickupCount++;
 };
 
 exports._onHeroVsEnemy = function(hero, enemy){
@@ -196,17 +193,17 @@ exports._handleInput = function(){
   }
 };
 
-exports._createHud = function(){
-  const coinIcon = this.game.make.image(0,0,'icon:coin');
-  const coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
-    coinIcon.height/2, this.coinFont);
-  coinScoreImg.anchor.set(0, 0.5);
-  const NUMBERS_STR = '0123456789X';
-  this.coinFont = this.game.add.retroFont('font:numbers', 20, 26,
-    NUMBERS_STR, 6);
-
-  this.hud = this.game.add.group();
-  this.hud.add(coinIcon);
-  this.hud.position.set(10,10);
-  this.hud.add(coinScoreImg);
-};
+// exports._createHud = function(){
+//   const coinIcon = this.game.make.image(0,0,'icon:coin');
+//   const coinScoreImg = this.game.make.image(coinIcon.x + coinIcon.width,
+//     coinIcon.height/2, this.coinFont);
+//   coinScoreImg.anchor.set(0, 0.5);
+//   const NUMBERS_STR = '0123456789X';
+//   this.coinFont = this.game.add.retroFont('font:numbers', 20, 26,
+//     NUMBERS_STR, 6);
+//
+//   this.hud = this.game.add.group();
+//   this.hud.add(coinIcon);
+//   this.hud.position.set(10,10);
+//   this.hud.add(coinScoreImg);
+// };
