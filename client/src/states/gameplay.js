@@ -34,7 +34,25 @@ this._loadLevel = function (data, resultsData) {
   this.enemyWalls = this.game.add.group();
   this.enemyWalls.visible = false;
   // spawn all platforms
-  this._spawnPlatform(resultsData, this.game, this.platforms);
+
+  resultsData.forEach(function(index){
+    this._spawnPlatform(index);
+  }, this);
+  // resultsData.forEach(function(index){
+  //   this.game.add.sprite(index*40, 300, 'myDynamicSpritesheet');
+  //   const sprite = this.platforms.create(index*40 ,300, 'myDynamicSpritesheet');
+  //   this.game.physics.enable(sprite);
+  //   sprite.body.allowGravity = false;
+  //   sprite.body.immovable = true;
+  // });
+
+  // this._spawnPlatform(resultsData, this.game, this.platforms);
+  // this.game.add.sprite(0, 0, 'myDynamicSpritesheet');
+  // const sprite = this.platforms.create(0 ,0, 'myDynamicSpritesheet');
+  // this.game.physics.enable(sprite);
+  // sprite.body.allowGravity = false;
+  // sprite.body.immovable = true;
+
   //spawn heroes and enemies
   this._spawnCharacters({hero: data.hero, spiders: data.spiders});
   //spawn important objects
@@ -45,27 +63,33 @@ this._loadLevel = function (data, resultsData) {
   this.game.physics.arcade.gravity.y = GRAVITY;
 };
 
-this._spawnPlatform = function (results, game, platforms) {
+this._spawnPlatform = function (index) {
+  this.game.add.sprite(index*40, 300, 'myDynamicSpritesheet');
+  const sprite = this.platforms.create(index*40, 300,'myDynamicSpritesheet');
+  this.game.physics.enable(sprite);
+  sprite.body.allowGravity = false;
+  sprite.body.immovable = true;
+
   //this.game.add.sprite(platform.x, platform.y, platform.image);
   // var bmd;
   // bmd = this.game.add.bitmapData(800, 450);
 
-  results.forEach(function(index){
-    // var ctx = bmd.context;
-    // bmd.clear();
-    // ctx.fillStyle = '#2E8B57';
-    // ctx.fillRect(index*40 ,300, 30, 100);
-    // var dataURL = bmd.canvas.toDataURL();
-    // game.load.spritesheet('myDynamicSpritesheet', dataURL, 30, 100);
-    //game.load.start();
-    const sprite = platforms.create(index*40 ,0, 'myDynamicSpritesheet');
-    //game.add.sprite(index*40 ,0, sprite);
-
-    game.physics.enable(sprite);
-    sprite.body.allowGravity = false;
-    sprite.body.immovable = true;
-
-  });
+  // results.forEach(function(index){
+  //   // var ctx = bmd.context;
+  //   // bmd.clear();
+  //   // ctx.fillStyle = '#2E8B57';
+  //   // ctx.fillRect(index*40 ,300, 30, 100);
+  //   // var dataURL = bmd.canvas.toDataURL();
+  //   // game.load.spritesheet('myDynamicSpritesheet', dataURL, 30, 100);
+  //   //game.load.start();
+  //   const sprite = platforms.create(index*40 ,0, 'myDynamicSpritesheet');
+  //   //game.add.sprite(index*40 ,0, sprite);
+  //
+  //   game.physics.enable(sprite);
+  //   sprite.body.allowGravity = false;
+  //   sprite.body.immovable = true;
+  //
+  // });
   // this._spawnEnemyWall(index*40, platform.west, 'left');
   // this._spawnEnemyWall(index*40 + 30, platform.west, 'right');
 };
