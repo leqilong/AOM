@@ -64,7 +64,7 @@ router.post('/submit', function(req, res, next) {
           jsonString += chunk;
         });
         gunzip.on('end', function() {
-          fs.writeFile('level.json', jsonString, function(err) {
+          fs.writeFile('../client/static/data/level.json', jsonString, function(err) {
             if (err) throw err;
             console.log('File saved!');
           })
