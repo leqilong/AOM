@@ -34,7 +34,7 @@ this._loadLevel = function (data, resultsData) {
   this.enemyWalls = this.game.add.group();
   this.enemyWalls.visible = false;
   // spawn all platforms
-  this._spawnPlatform(resultsData, this);
+  this._spawnPlatform(resultsData, this.game, this.platforms);
   //spawn heroes and enemies
   this._spawnCharacters({hero: data.hero, spiders: data.spiders});
   //spawn important objects
@@ -45,24 +45,25 @@ this._loadLevel = function (data, resultsData) {
   this.game.physics.arcade.gravity.y = GRAVITY;
 };
 
-this._spawnPlatform = function (results) {
+this._spawnPlatform = function (results, game, platforms) {
   //this.game.add.sprite(platform.x, platform.y, platform.image);
-  var bmd;
-  bmd = this.game.add.bitmapData(800, 450);
+  // var bmd;
+  // bmd = this.game.add.bitmapData(800, 450);
 
   results.forEach(function(index){
-    var ctx = bmd.context;
-    //bmd.clear();
-    ctx.fillStyle = '#2E8B57';
-    ctx.fillRect(index*40 ,0, 30, 100);
+    // var ctx = bmd.context;
+    // bmd.clear();
+    // ctx.fillStyle = '#2E8B57';
+    // ctx.fillRect(index*40 ,300, 30, 100);
     // var dataURL = bmd.canvas.toDataURL();
-    // this.game.load.spritesheet('myDynamicSpritesheet', dataURL, 30, 100);
+    // game.load.spritesheet('myDynamicSpritesheet', dataURL, 30, 100);
+    //game.load.start();
+    const sprite = platforms.create(index*40 ,0, 'myDynamicSpritesheet');
+    //game.add.sprite(index*40 ,0, sprite);
 
-    // const sprite = this.platforms.create(index*40 ,0, 'myDynamicSpritesheet');
-
-    // this.game.physics.enable(sprite);
-    // sprite.body.allowGravity = false;
-    // sprite.body.immovable = true;
+    game.physics.enable(sprite);
+    sprite.body.allowGravity = false;
+    sprite.body.immovable = true;
 
   });
   // this._spawnEnemyWall(index*40, platform.west, 'left');
@@ -125,6 +126,8 @@ this._handleInput = function(){
     this.hero.move(-1);
   }else if (this.keys.right.isDown){
     this.hero.move(1);
+  }else if (this.keys.up.isDown){
+    this.hero.jump();
   }else{
     this.hero.move(0);
   }

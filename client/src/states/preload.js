@@ -13,5 +13,23 @@ exports.preload = function(game) {
 };
 
 exports.create = function(game) {
+  var bmd;
+  bmd = this.game.add.bitmapData(800, 450);
+  var results = game.cache.getJSON('results');
+
+  results.forEach(function(index){
+    var ctx = bmd.context;
+    //bmd.clear();
+    ctx.fillStyle = '#2E8B57';
+    ctx.fillRect(index*40 ,0, 30, 100);
+    var dataURL = bmd.canvas.toDataURL();
+    game.cache.addSpriteSheet('myDynamicSpritesheet', dataURL, 30, 100);
+    //game.load.start();
+    //const sprite = platforms.create(index*40 ,300, 'myDynamicSpritesheet');
+
+    // game.physics.enable(sprite);
+    // sprite.body.allowGravity = false;
+    // sprite.body.immovable = true;
+  });
   game.state.start('gameplay');
 };
