@@ -42,7 +42,7 @@ gulp.task('serve', ['build'], function() {
       baseDir: './build'
     }
   });
-  gulp.watch('./src/**/*.js', ['build']).on('change', function() {
+  gulp.watch('./client/src/**/*.js', ['build']).on('change', function() {
     keepFiles = true;
   });
 });
@@ -55,12 +55,12 @@ gulp.task('build', ['phaser'], function() {
     debug: true
   })
   .bundle()
-  .pipe(source('game.js'))
+  .pipe(source('bundle.js'))
   .pipe(buffer())
-  // .pipe(uglify()).on('error', function(err) {
-  //   gutil.log(gutil.colors.red('[Error]'), err.toString());
-  //   this.emit('end');
-  // })
+  .pipe(uglify()).on('error', function(err) {
+    gutil.log(gutil.colors.red('[Error]'), err.toString());
+    this.emit('end');
+  })
   .pipe(gulp.dest('./build/scripts'))
   .pipe(browserSync.stream());
 });
@@ -74,8 +74,8 @@ gulp.task('style', function() {
     '!build{},/**}'
   ])
   .pipe(eslint())
-  .pipe(eslint.format());
-  // .pipe(eslint.failOnError());
+  .pipe(eslint.format())
+  .pipe(eslint.failOnError());
 });
 
 gulp.task('default', ['clean', 'static', 'phaser', 'serve', 'build', 'style']);
